@@ -213,3 +213,56 @@ footer a { color: #3b5bdb; }
   .tiles { grid-template-columns: repeat(2, 1fr); }
   .route { flex-wrap: wrap; }
 }
+
+/* ---------- Download button, data source ---------- */
+.source { text-align: center; font-size: 13px; color: #6b7280; margin: 12px 0 0; }
+button.secondary {
+  margin-top: 6px;
+  background: white;
+  color: #3b5bdb;
+  box-shadow: none;
+  font-size: 15px;
+  padding: 12px;
+}
+
+/* ---------- AI agent ---------- */
+.agent {
+  background: white;
+  border-radius: 24px;
+  padding: 28px;
+  margin: 28px 0;
+  box-shadow: 0 20px 50px rgba(109, 40, 217, 0.15);
+  border-top: 6px solid #c026d3;
+}
+.agent h2 { margin: 0 0 6px; font-size: 22px; }
+.keybox { background: #faf5ff; border-radius: 14px; padding: 12px 16px; margin: 14px 0; }
+.small-text { font-size: 13px; color: #6b7280; }
+.keybox a { color: #7c3aed; font-weight: 600; }
+.row { display: flex; gap: 10px; }
+.row input { flex: 1; }
+.small-btn { width: auto; padding: 12px 20px; font-size: 15px; box-shadow: none; }
+.link-btn { width: auto; background: none; color: #7c3aed; padding: 0 0 0 8px; font-size: 13px; box-shadow: none; text-decoration: underline; }
+.link-btn:hover { transform: none; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.chip {
+  width: auto;
+  background: #f1f5ff;
+  color: #3b5bdb;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+.chat-log { max-height: 420px; overflow-y: auto; margin-bottom: 12px; }
+.chat-log:empty { display: none; }
+.msg { padding: 10px 14px; border-radius: 14px; margin: 8px 0; white-space: pre-wrap; font-size: 15px; line-height: 1.5; max-width: 90%; }
+.msg.user { background: #3b5bdb; color: white; margin-left: auto; }
+.msg.bot  { background: #f3f4f6; color: #1f2937; }
+
+@media (max-width: 640px) {
+  .row { flex-direction: column; }
+  .small-btn { width: 100%; }
+}

@@ -1,0 +1,30 @@
+name,category,need,weightKg,priceIndia,Germany,UK,US,France,Spain,Italy,Ireland,Canada,Australia,New Zealand,UAE,Russia,works,customs,fragile,weekOne,note
+Pressure cooker (3 L),Kitchen,Must,2,2000,45,40,50,45,43,45,50,68,70,77,185,4000,TRUE,TRUE,FALSE,TRUE,
+Winter jacket,Clothing,Must,1.5,6000,60,50,70,60,57,60,66,94,100,110,259,6000,TRUE,TRUE,FALSE,FALSE,Winter-grade jackets are better value and quality abroad.
+Electric kettle,Appliances,Nice,1,1200,25,20,25,25,24,25,28,34,35,38,92,2000,FALSE,TRUE,FALSE,TRUE,Plug/voltage differ; adapter or converter needed.
+Spices & masalas (sealed packs),Spices (sealed),Must,2,1500,40,30,40,40,38,40,44,54,60,66,148,3000,TRUE,TRUE,FALSE,TRUE,"Only sealed, branded, factory-packed spices. No loose or homemade masala. Declare in Australia."
+Bedding & pillows,Bedding,Must,4,3000,40,35,50,40,38,40,44,68,70,77,185,4000,TRUE,TRUE,FALSE,TRUE,
+Stationery,Stationery,Nice,1,500,20,15,20,20,19,20,22,27,30,33,74,1500,TRUE,TRUE,FALSE,FALSE,
+Clothes iron,Appliances,Optional,1.2,1000,20,18,25,20,19,20,22,34,30,33,92,2000,TRUE,TRUE,FALSE,FALSE,
+Shampoo & conditioner,Toiletries,Nice,0.8,500,8,6,8,8,8,8,9,11,12,13,30,500,TRUE,TRUE,FALSE,TRUE,Liquids over 100 ml go in the checked bag; tape the caps.
+Toothpaste & toothbrush,Toiletries,Must,0.3,200,4,3,5,4,4,4,4,7,6,7,18,300,TRUE,TRUE,FALSE,TRUE,Carry a small set for week 1.
+Soap & body wash,Toiletries,Nice,0.5,250,5,4,6,5,5,5,6,8,8,9,22,400,TRUE,TRUE,FALSE,TRUE,
+Sanitary pads (1 month),Toiletries,Must,0.6,400,6,5,8,6,6,6,7,11,9,10,30,500,TRUE,TRUE,FALSE,TRUE,Bring your usual brand for the first month.
+Hair oil (coconut),Toiletries,Nice,0.5,250,8,6,8,8,8,8,9,11,10,11,30,600,TRUE,TRUE,FALSE,FALSE,Seal the cap; checked bag.
+Kajal / kohl pencil,Makeup (basic),Nice,0.05,250,8,6,8,8,8,8,9,11,12,13,30,600,TRUE,TRUE,FALSE,FALSE,
+Lipstick (1-2),Makeup (basic),Nice,0.05,600,12,10,12,12,11,12,13,16,18,20,44,900,TRUE,TRUE,FALSE,FALSE,
+Compact / foundation,Makeup (basic),Nice,0.1,700,15,12,15,15,14,15,16,20,22,24,56,1200,TRUE,TRUE,TRUE,FALSE,Shade match is easier with brands you already use.
+Sunscreen SPF 50,Makeup (basic),Must,0.2,500,12,10,12,12,11,12,13,16,15,16,44,900,TRUE,TRUE,FALSE,TRUE,Over 100 ml goes in the checked bag.
+Moisturiser,Makeup (basic),Nice,0.2,350,8,7,9,8,8,8,9,12,12,13,33,600,TRUE,TRUE,FALSE,FALSE,
+"Ready-to-eat meals & noodles (veg, sealed)",Packed food,Nice,2,600,15,12,16,15,14,15,16,22,25,28,59,1200,TRUE,TRUE,FALSE,TRUE,"Sealed, factory-packed, vegetarian only. Declare food in Australia."
+Biscuits & namkeen (sealed),Packed food,Nice,1.5,400,12,10,12,12,11,12,13,16,18,20,44,900,TRUE,TRUE,FALSE,TRUE,Sealed packs only.
+Tea & coffee (sealed),Packed food,Nice,0.5,300,8,6,8,8,8,8,9,11,12,13,30,600,TRUE,TRUE,FALSE,TRUE,Sealed packs only.
+Pickle (sealed jar),Packed food,Optional,1,300,8,6,8,8,8,8,9,11,12,13,30,700,TRUE,TRUE,TRUE,FALSE,Oil leaks: double-bag. Declare in Australia.
+Ghee,Milk products,Must,1,600,10,8,10,10,10,10,11,14,15,16,37,800,TRUE,FALSE,FALSE,FALSE,"Milk products from India are not allowed into the EU/UK; restricted or must be declared in the US, Australia and Russia."
+Milk powder,Milk products,Nice,0.5,300,6,5,7,6,6,6,7,9,9,10,26,500,TRUE,FALSE,FALSE,FALSE,Same rule as ghee.
+Paneer / cheese,Milk products,Nice,0.5,200,4,3,5,4,4,4,4,7,7,8,18,400,TRUE,FALSE,FALSE,FALSE,Same rule as ghee; also spoils.
+"Milk sweets (peda, barfi)",Milk products,Optional,1,500,15,12,15,15,14,15,16,20,20,22,56,1000,TRUE,FALSE,FALSE,FALSE,Same rule as ghee.
+Prescribed medicines (3-month supply),Medicines,Must,0.5,1500,60,45,100,50,45,50,60,90,70,70,200,3000,TRUE,TRUE,FALSE,TRUE,Original packs + doctor's prescription in English. Many countries cap personal supply (often ~3 months). Some medicines (e.g. codeine-based) need approval in the UAE: check the list.
+"Basic first-aid kit (bandages, antiseptic, thermometer)",Medicines,Must,0.4,500,15,12,15,15,14,15,16,20,20,22,55,1000,TRUE,TRUE,FALSE,TRUE,Hard to find quickly in week 1; light to carry.
+"Everyday OTC medicines your doctor advises (fever, ORS, antacid)",Medicines,Must,0.3,300,10,8,12,10,9,10,11,15,15,16,40,700,TRUE,TRUE,FALSE,TRUE,"Only what your doctor recommends, in original packs. The agent never suggests or substitutes medicines."
+Spare glasses / contact lenses,Eye care,Nice,0.2,1500,80,60,100,80,75,80,90,130,120,130,300,6000,TRUE,TRUE,TRUE,FALSE,Carry your lens prescription; replacements abroad need a local eye test and cost more.

@@ -1,5 +1,10 @@
 // CarryOrBuy: the "brain" and the results screen
 
+// 0. WHERE THE ITEM LIST COMES FROM
+// Paste your Google Sheet "Publish to web" CSV link between the quotes.
+// Leave it empty ("") to use the list in data.js instead.
+const SHEET_CSV_URL = "";
+
 // 1. THE DECISION RULE (same as the sheet)
 function decide(item, country) {
   const c = COUNTRIES[country];
@@ -11,6 +16,9 @@ function decide(item, country) {
 
   // Rule 2: won't work there (plug/voltage) -> buy there, or skip if optional
   if (!item.works) { result.verdict = item.need === "Optional" ? "Skip" : "Buy there"; return result; }
+
+  // No price for this country yet
+  if (localPrice === undefined || isNaN(localPrice)) { result.verdict = "Buy there"; result.noPrice = true; return result; }
 
   // Rule 3: compare money
   result.priceThere = localPrice * c.rate;              // price abroad in rupees
@@ -36,6 +44,7 @@ function whyText(item, r, country) {
   const c = COUNTRIES[country];
   if (r.verdict === "Not allowed") return "Customs: not allowed into most countries. Don't pack it.";
   if (!item.works) return "Won't work there as-is (" + c.plug + ").";
+  if (r.noPrice) return "No price for " + country + " yet: check the live price.";
   return "India " + rupees(item.priceIndia) + " vs " + country + " " + c.symbol + r.localPrice +
     " (" + rupees(r.priceThere) + "). " +
     (r.gap > 0 ? "Carrying saves " + rupees(r.gap) : "It's no cheaper in India") +
@@ -53,14 +62,16 @@ function showList() {
   let buyThereCost = 0;
   const counts = { "Carry": 0, "Buy there": 0, "Skip": 0, "Not allowed": 0 };
   const groups = {};
+  lastList = [];
 
   ITEMS.forEach(function (item) {
     const r = decide(item, country);
     counts[r.verdict] = (counts[r.verdict] || 0) + 1;
     if (r.verdict === "Carry") carryKg += item.weightKg;
-    if (r.verdict === "Buy there") buyThereCost += item.prices[country] * c.rate;
+    if (r.verdict === "Buy there" && !r.noPrice) buyThereCost += item.prices[country] * c.rate;
     if (!groups[item.category]) groups[item.category] = [];
     groups[item.category].push({ item: item, r: r });
+    lastList.push({ item: item, r: r });
   });
 
   // Summary + bag meter + budget
@@ -85,6 +96,7 @@ function showList() {
   html += '<div class="meter"><div class="fill' + (overBag ? ' over' : '') + '" style="width:' + bagPct + '%"></div></div>';
   html += '<p><strong>Buying there will cost about:</strong> ' + rupees(buyThereCost) + ' of your ' + rupees(budget) + ' budget' +
     (overBudget ? ' <span class="warn">Over budget</span>' : '') + '</p>';
+  html += '<button class="secondary" onclick="downloadList()">⬇️ Download my list (opens in Excel)</button>';
   html += '</div>';
 
   // One card per category
@@ -119,5 +131,75 @@ function showList() {
   document.getElementById("results").scrollIntoView({ behavior: "smooth" });
 }
 
-// 4. CONNECT THE BUTTON
+// 4. DOWNLOAD THE LIST AS A SPREADSHEET (CSV opens in Excel / Google Sheets)
+let lastList = [];
+let lastCountry = "";
+
+function downloadList() {
+  const country = document.getElementById("country").value;
+  const c = COUNTRIES[country];
+  const cell = function (v) { v = String(v == null ? "" : v); return '"' + v.replace(/"/g, '""') + '"'; };
+  const lines = [["Category", "Item", "Verdict", "Weight (kg)", "Price in India (Rs)", "Price in " + country + " (" + c.currency + ")", "Price there (Rs)", "Note", "Packed?"].map(cell).join(",")];
+  lastList.forEach(function (row) {
+    const i = row.item, r = row.r;
+    lines.push([i.category, i.name, r.verdict, i.weightKg, i.priceIndia, i.prices[country],
+      r.priceThere ? Math.round(r.priceThere) : "", i.note, ""].map(cell).join(","));
+  });
+  const blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "CarryOrBuy-" + country.replace(/ /g, "-") + ".csv";
+  a.click();
+}
+
+// 5. LOAD ITEMS FROM A GOOGLE SHEET (if a link is set above)
+function parseCSV(text) {
+  const rows = []; let row = [], field = "", inQuotes = false;
+  for (let k = 0; k < text.length; k++) {
+    const ch = text[k];
+    if (inQuotes) {
+      if (ch === '"' && text[k + 1] === '"') { field += '"'; k++; }
+      else if (ch === '"') inQuotes = false;
+      else field += ch;
+    } else if (ch === '"') inQuotes = true;
+    else if (ch === ",") { row.push(field); field = ""; }
+    else if (ch === "\n" || ch === "\r") {
+      if (ch === "\r" && text[k + 1] === "\n") k++;
+      row.push(field); field = "";
+      if (row.some(function (x) { return x !== ""; })) rows.push(row);
+      row = [];
+    } else field += ch;
+  }
+  if (field !== "" || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+function loadFromSheet() {
+  const status = document.getElementById("source");
+  if (!SHEET_CSV_URL) { status.textContent = "📄 Item list: built-in (" + ITEMS.length + " items)"; return; }
+  fetch(SHEET_CSV_URL)
+    .then(function (res) { return res.text(); })
+    .then(function (text) {
+      const rows = parseCSV(text);
+      const head = rows[0].map(function (h) { return h.trim(); });
+      const col = function (name) { return head.indexOf(name); };
+      const yes = function (v) { return String(v).trim().toUpperCase() === "TRUE"; };
+      const fresh = rows.slice(1).filter(function (r) { return r[col("name")]; }).map(function (r) {
+        const prices = {};
+        Object.keys(COUNTRIES).forEach(function (cn) { if (col(cn) >= 0 && r[col(cn)] !== "") prices[cn] = Number(r[col(cn)]); });
+        return {
+          name: r[col("name")], category: r[col("category")], need: r[col("need")],
+          weightKg: Number(r[col("weightKg")]), priceIndia: Number(r[col("priceIndia")]), prices: prices,
+          works: yes(r[col("works")]), customs: yes(r[col("customs")]), fragile: yes(r[col("fragile")]),
+          weekOne: yes(r[col("weekOne")]), note: r[col("note")] || ""
+        };
+      });
+      if (fresh.length) { ITEMS.length = 0; fresh.forEach(function (x) { ITEMS.push(x); }); }
+      status.textContent = "📊 Item list: live from Google Sheet (" + ITEMS.length + " items)";
+    })
+    .catch(function () { status.textContent = "📄 Couldn't reach the Google Sheet, using the built-in list (" + ITEMS.length + " items)"; });
+}
+
+// 6. CONNECT THE BUTTON AND START
 document.getElementById("checkBtn").addEventListener("click", showList);
+loadFromSheet();
