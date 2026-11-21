@@ -37,5 +37,13 @@
   <br><br>
 
   <button id="checkBtn">Show my list</button>
+
+  <p id="status"></p>
+
+  <script src="data.js"></script>
+  <script>
+    document.getElementById("status").textContent =
+      ITEMS.length + " items loaded for " + Object.keys(COUNTRIES).length + " countries.";
+  </script>
 </body>
 </html>
