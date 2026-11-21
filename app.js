@@ -5,6 +5,10 @@
 // Leave it empty ("") to use the list in data.js instead.
 const SHEET_CSV_URL = "";
 
+// Paste your Google Apps Script "Web app" link between the quotes to save
+// every search (anonymously) into your Google Sheet. Leave "" to save nothing.
+const LOG_URL = "";
+
 // 1. THE DECISION RULE (same as the sheet)
 function decide(item, country) {
   const c = COUNTRIES[country];
@@ -125,9 +129,17 @@ function showList() {
   // Disclaimers
   html += '<p class="disclaimer">Indicative prices (Nov 2026), not live: check the live price before buying. ' +
     'Exchange rates: mid-market, Nov 2026. Customs and medicine rules are general guidance: check your destination\'s official customs site. ' +
-    'CarryOrBuy never buys anything for you and never suggests medicines.</p>';
+    'CarryOrBuy never buys anything for you and never suggests medicines. ' +
+    'We record anonymous usage (destination, baggage, budget and results) to improve the tool; no personal data is stored.</p>';
 
   document.getElementById("results").innerHTML = html;
+
+  // Save an anonymous record of this search to the Google Sheet
+  logEntry({
+    country: country, baggage: baggage, budget: budget,
+    carry: counts["Carry"], buy: counts["Buy there"], skip: counts["Skip"], notAllowed: counts["Not allowed"],
+    kg: Number(carryKg.toFixed(1)), cost: Math.round(buyThereCost)
+  });
   document.getElementById("results").scrollIntoView({ behavior: "smooth" });
 }
 
@@ -200,6 +212,17 @@ function loadFromSheet() {
     .catch(function () { status.textContent = "📄 Couldn't reach the Google Sheet, using the built-in list (" + ITEMS.length + " items)"; });
 }
 
-// 6. CONNECT THE BUTTON AND START
+// 6. SAVE ANONYMOUS USAGE TO GOOGLE SHEETS (no names, emails or personal data)
+function logEntry(entry) {
+  if (!LOG_URL) return;
+  fetch(LOG_URL, {
+    method: "POST",
+    mode: "no-cors",                       // Google Apps Script accepts this without extra setup
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify(entry)
+  }).catch(function () { /* if saving fails, the site still works */ });
+}
+
+// 7. CONNECT THE BUTTON AND START
 document.getElementById("checkBtn").addEventListener("click", showList);
 loadFromSheet();
