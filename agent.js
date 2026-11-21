@@ -27,10 +27,33 @@ function agentInstructions(country) {
     "3. Always flag customs: milk and meat products are generally not allowed into the EU/UK; food must be sealed and declared (especially Australia and New Zealand).\n" +
     "4. Prices in the list are indicative estimates, not live prices. Say so when quoting them and suggest checking the live price.\n" +
     "5. For items not in the list, reason with the same rule and say your figures are rough estimates.\n" +
-    "6. Be concise and practical: short paragraphs or bullet points, use ₹.";
+    "6. Be concise and practical: at most about 150 words, a few short bullet points, use ₹. Use simple formatting only (bold and bullet points), no tables.";
 }
 
-// 2. Show a message in the chat window
+// 2. Turn the agent's formatting (**bold**, ### headings, * bullets) into tidy HTML
+function formatAnswer(text) {
+  const safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  let html = "", inList = false;
+  safe.split("\n").forEach(function (raw) {
+    let line = raw.trim()
+      .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
+      .replace(/(^|[^*])\*(?!\s)(.+?)\*(?!\*)/g, "$1<i>$2</i>");
+    const bullet = /^([*-]|\d+\.)\s+/.test(raw.trim());
+    if (bullet) {
+      if (!inList) { html += "<ul>"; inList = true; }
+      html += "<li>" + line.replace(/^([*-]|\d+\.)\s+/, "") + "</li>";
+      return;
+    }
+    if (inList) { html += "</ul>"; inList = false; }
+    if (/^-{3,}$/.test(line)) html += "<hr>";
+    else if (/^#{1,6}\s/.test(line)) html += "<h4>" + line.replace(/^#{1,6}\s/, "") + "</h4>";
+    else if (line) html += "<p>" + line + "</p>";
+  });
+  if (inList) html += "</ul>";
+  return html;
+}
+
+// 3. Show a message in the chat window
 function addMessage(who, text) {
   const box = document.getElementById("chatLog");
   const div = document.createElement("div");
@@ -41,7 +64,7 @@ function addMessage(who, text) {
   return div;
 }
 
-// 3. Save / forget the key
+// 4. Save / forget the key
 function saveKey() {
   const key = document.getElementById("apiKey").value.trim();
   if (!key) return;
@@ -63,7 +86,7 @@ function refreshKeyStatus() {
   document.getElementById("forgetBtn").style.display = has ? "inline-block" : "none";
 }
 
-// 4. Ask Gemini
+// 5. Ask Gemini
 const history = [];
 
 async function askAgent() {
@@ -92,7 +115,7 @@ async function askAgent() {
     if (!res.ok) throw new Error((data.error && data.error.message) || ("Error " + res.status));
     const parts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
     const answer = parts.map(function (p) { return p.text || ""; }).join("").trim() || "Sorry, I couldn't answer that.";
-    thinking.textContent = answer;
+    thinking.innerHTML = formatAnswer(answer);
     history.push({ role: "model", parts: [{ text: answer }] });
   } catch (err) {
     thinking.textContent = "⚠️ " + err.message;
@@ -100,7 +123,7 @@ async function askAgent() {
   }
 }
 
-// 5. Connect the buttons
+// 6. Connect the buttons
 document.getElementById("saveKeyBtn").addEventListener("click", saveKey);
 document.getElementById("forgetBtn").addEventListener("click", forgetKey);
 document.getElementById("askBtn").addEventListener("click", askAgent);
