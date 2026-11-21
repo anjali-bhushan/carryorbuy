@@ -7,7 +7,7 @@ const SHEET_CSV_URL = "";
 
 // Paste your Google Apps Script "Web app" link between the quotes to save
 // every search (anonymously) into your Google Sheet. Leave "" to save nothing.
-const LOG_URL = " https://script.google.com/macros/s/AKfy...../exec ";
+const LOG_URL = " https://script.google.com/macros/s/AKfycbzsq...JBCgjsxA/exec ";
 
 // 1. THE DECISION RULE (same as the sheet)
 function decide(item, country) {
